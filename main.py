@@ -1,14 +1,21 @@
 import discord
 import os
 
-
-class MyClient(discord.Client):
-    async def on_ready(self):
-        print('Logged on as {0}!'.format(self.user))
-
-    async def on_message(self, message):
-        print('Message from {0.author}: {0.content}'.format(message))
+client = discord.Client()
 
 
-client = MyClient()
+@client.event
+async def on_ready():
+    print(f'We have logged in as {client.user}')
+
+
+@client.event
+async def on_message(message):
+    if message.author == client.user:
+        return
+
+    if message.content.startswith('$hello'):
+        await message.channel.send(f"Hello! {message.author.display_name}!")
+
+
 client.run(os.environ['DISCORD_TOKEN'])
